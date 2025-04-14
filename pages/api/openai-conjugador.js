@@ -1,3 +1,4 @@
+// pages/api/openai-conjugador.js
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -7,7 +8,15 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Método no permitido" });
+  }
+
   const { prompt } = req.body;
+
+  if (!prompt) {
+    return res.status(400).json({ error: "Falta el prompt" });
+  }
 
   try {
     const completion = await openai.createChatCompletion({
@@ -16,10 +25,12 @@ export default async function handler(req, res) {
     });
 
     const respuesta = completion.data.choices[0].message.content;
-    const json = JSON.parse(respuesta);
-    res.status(200).json(json);
+
+    // Intentamos convertir la respuesta a JSON
+    const conjugaciones = JSON.parse(respuesta);
+    res.status(200).json(conjugaciones);
   } catch (error) {
-    console.error("Error con OpenAI:", error);
+    console.error("Error en el backend:", error);
     res.status(500).json({ error: "Error al generar conjugaciones" });
   }
 }
