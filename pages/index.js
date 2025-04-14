@@ -1,9 +1,5 @@
-
+// pages/index.js
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const tiempos = [
   "Presente",
@@ -31,10 +27,8 @@ export default function ConjugadorApp() {
 
       const response = await fetch("/api/openai-conjugador", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
@@ -55,57 +49,63 @@ export default function ConjugadorApp() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 space-y-6">
+    <div className="max-w-xl mx-auto p-6 space-y-6 font-sans">
       <h1 className="text-3xl font-bold text-center">Conjugador de Verbos en Español</h1>
 
-      <Card>
-        <CardContent className="space-y-4 p-6">
-          <Input
-            placeholder="Introduce un verbo"
-            value={verbo}
-            onChange={(e) => setVerbo(e.target.value)}
-          />
+      <div className="bg-white shadow-md rounded p-4 space-y-4">
+        <input
+          type="text"
+          className="w-full border border-gray-300 p-2 rounded"
+          placeholder="Introduce un verbo"
+          value={verbo}
+          onChange={(e) => setVerbo(e.target.value)}
+        />
 
-          <Select onValueChange={setTiempo}>
-            <SelectTrigger>
-              <SelectValue placeholder="Elige un tiempo verbal" />
-            </SelectTrigger>
-            <SelectContent>
-              {tiempos.map((tiempo) => (
-                <SelectItem key={tiempo} value={tiempo}>{tiempo}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <select
+          className="w-full border border-gray-300 p-2 rounded"
+          value={tiempo}
+          onChange={(e) => setTiempo(e.target.value)}
+        >
+          <option value="">Elige un tiempo verbal</option>
+          {tiempos.map((tiempo) => (
+            <option key={tiempo} value={tiempo}>{tiempo}</option>
+          ))}
+        </select>
 
-          <Button onClick={conjugar}>Conjugar</Button>
-        </CardContent>
-      </Card>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={conjugar}
+        >
+          Conjugar
+        </button>
+      </div>
 
       {conjugaciones && (
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Conjugaciones ({tiempo}):</h2>
-            <ul className="space-y-1">
-              {Object.entries(conjugaciones).map(([persona, forma]) => (
-                <li key={persona}><strong>{persona}:</strong> {forma}</li>
-              ))}
-            </ul>
-            <Button className="mt-4" onClick={mostrarEjemplos}>Ejemplo</Button>
-          </CardContent>
-        </Card>
+        <div className="bg-gray-100 rounded p-4">
+          <h2 className="text-xl font-semibold mb-4">Conjugaciones ({tiempo}):</h2>
+          <ul className="space-y-1">
+            {Object.entries(conjugaciones).map(([persona, forma]) => (
+              <li key={persona}><strong>{persona}:</strong> {forma}</li>
+            ))}
+          </ul>
+          <button
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            onClick={mostrarEjemplos}
+          >
+            Ejemplo
+          </button>
+        </div>
       )}
 
       {ejemplos && (
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="text-lg font-medium mb-2">Ejemplos:</h3>
-            <ul className="list-disc pl-5 space-y-1">
-              {ejemplos.map((ejemplo, idx) => (
-                <li key={idx}>{ejemplo}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <div className="bg-gray-50 rounded p-4">
+          <h3 className="text-lg font-medium mb-2">Ejemplos:</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            {ejemplos.map((ejemplo, idx) => (
+              <li key={idx}>{ejemplo}</li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
