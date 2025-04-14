@@ -31,7 +31,11 @@ export default async function handler(req, res) {
     const json = JSON.parse(respuesta);
     res.status(200).json(json);
   } catch (error) {
-    console.error("Error en el backend:", error);
-    res.status(500).json({ error: "Error al generar conjugaciones" });
-  }
+  console.error("Error completo:", JSON.stringify(error, null, 2));
+  res.status(500).json({
+    error: "Error al generar conjugaciones",
+    detalle: error.message || "Desconocido",
+  });
+}
+
 }
