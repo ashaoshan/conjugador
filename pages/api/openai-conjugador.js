@@ -8,6 +8,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
+  console.log("CLAVE DE API:", process.env.OPENAI_API_KEY);
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
