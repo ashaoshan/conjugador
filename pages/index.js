@@ -21,24 +21,33 @@ export default function ConjugadorApp() {
   const [ejemplos, setEjemplos] = useState(null);
 
   const conjugar = async () => {
-    if (!verbo || !tiempo) return;
-    try {
-      const prompt = `Conjuga el verbo "${verbo}" en español en el tiempo "${tiempo}" para todas las personas del singular y plural. Devuelve solo las formas en formato JSON, con las claves: yo, tú, él/ella, nosotros, vosotros, ellos.`;
+  if (!verbo || !tiempo) return;
 
-      const response = await fetch("/api/openai-conjugador", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
+  const prompt = `Conjuga el verbo "${verbo}" en español en el tiempo "${tiempo}" para todas las personas del singular y plural. Devuelve solo las formas en formato JSON, con las claves: yo, tú, él/ella, nosotros, vosotros, ellos.`;
 
-      const data = await response.json();
-      setConjugaciones(data);
-      setEjemplos(null);
-    } catch (error) {
-      console.error("Error al conjugar:", error);
-      setConjugaciones(null);
-    }
-  };
+  console.log("Enviando prompt:", prompt);
+
+  try {
+    const response = await fetch("/api/openai-conjugador", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    const raw = await response.text();
+    console.log("Respuesta cruda:", raw);
+
+    const data = JSON.parse(raw);
+    setConjugaciones(data);
+    setEjemplos(null);
+  } catch (error) {
+    console.error("Error al conjugar:", error);
+    setConjugaciones(null);
+  }
+};
+
 
   const mostrarEjemplos = () => {
     if (!conjugaciones) return;
@@ -110,5 +119,3 @@ export default function ConjugadorApp() {
     </div>
   );
 }
- console.log("Enviando prompt:", prompt);
-console.log("Respuesta cruda:", await response.text());
