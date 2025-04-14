@@ -48,6 +48,9 @@ export default function ConjugadorApp() {
     setEjemplos(ejemplosGenerados);
   };
 
+  console.log("Enviando prompt:", prompt);
+console.log("Respuesta cruda:", await response.text());
+
   return (
     <div className="max-w-xl mx-auto p-6 space-y-6 font-sans">
       <h1 className="text-3xl font-bold text-center">Conjugador de Verbos en Español</h1>
